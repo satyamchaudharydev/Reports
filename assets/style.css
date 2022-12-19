@@ -1,0 +1,101 @@
+:root{
+    font-family: "Arial", sans-serif;
+}
+
+body{
+    background-color: #E9F2F2;
+    padding-inline: 30px;
+    box-sizing: border-box;
+}
+.app{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+*{
+    box-sizing: border-box;
+}
+.nav-item{
+    color: #93949D!important;
+    font-weight: 500;
+}
+.label{
+    margin-bottom: 8px;
+}
+.seperator,hr{
+    color: #93949e45;
+    margin: 0;
+}
+.overview-box{
+    width: fit-content;
+    height: min-content;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+}
+.overview-box-item{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.overview-title{
+    color: #777982;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+.overview-value{
+    color: #33333D;
+}
+.section-title{
+    color: #2E2E3C;
+    font-size: 20px;
+}
+.table-container table{
+    width: 100%;
+    border-collapse: collapse;
+}
+.nav-link{
+
+    padding-block: 5px;
+}
+.nav-link.active{
+    background: #d8e7e7;
+    border-radius: 4px;
+}
+.overview-container{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+}
+.overview-graph{
+    flex: 0.8;
+    justify-self: end;
+    background: #fff;
+}
+.table-data{
+    overflow: auto;
+}
+.flex{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.flex-1{
+    /* flex: 1; */
+    flex-basis: 70%;
+}
+.DateInput_input{
+    font-size: 16px;
+    height: 36px;
+}
+.completion-graph{
+    width: 600px;
+    height: 400px;
+}
+.white{
+    overflow: hidden;
+    padding: 30px;
+    box-sizing: border-box;
+    background: #fff;
+}
