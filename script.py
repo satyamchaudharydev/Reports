@@ -312,12 +312,12 @@ School_session_attendance_overview['Attendance %'] = (School_session_attendance_
 
 school_batch_session_overview = school_batch_session_overview.merge(School_session_attendance_overview,on='Key_3',how='left')
 
-
+#%%
 # sheets = ['schoolDataOverview', 'schoolBatchOverview', 'schoolBatchSessionOverview']
 schoolDataOverview = school_data_overview.to_csv('schoolDataOverview.csv', index=False)
-schoolBatchWiseOverview = school_data_overview.to_csv('schoolBatchOverview.csv', index=False)
-schoolBatchSessionWiseOverview = school_data_overview.to_csv('schoolBatchOverview.csv', index=False)
-schoolTeacherDataOverview = school_data_overview.to_csv('schoolBatchOverview.csv', index=False)
+schoolBatchWiseOverview = school_batch_data_overview.to_csv('schoolBatchOverview.csv', index=False)
+schoolBatchSessionWiseOverview = school_batch_session_overview.to_csv('schoolBatchSessionOverview.csv', index=False)
+schoolTeacherDataOverview = school_teacher_data_total.to_csv('schoolTeacherDataOverview.csv', index=False)
 
 sheets = [
         {
@@ -348,20 +348,30 @@ sheets = [
         
         
         ]
+# remove file from sheets
+
+sheetsData = []
+for i in sheetsData: 
+    sheetsData.append(i['file'])
+
+
+
 for sheet in sheets:
-  range = sheet['range']
+  ranges = sheet['range']
   values = sheet['values']
   file = sheet['file']
   data = [{
-      'range': range,
+      'range': ranges,
       'values': values
   }]
   with open(file, 'r') as f:
+      
     reader = csv.reader(f)
     data = list(reader)
     body = {
-      'values': data
+      'values': sheets
       }
+    print(body)
 
     service.spreadsheets().values().clear(
           spreadsheetId=spreadsheet_id, range=range_
