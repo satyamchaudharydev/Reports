@@ -65,20 +65,8 @@ navItems = [
   },
 ]
 # 
-df = pd.read_csv(school_overview_url)
-async def get_data_from_backend(): 
-  AlchemyEngine = create_engine('postgresql+psycopg2://tekieadmin@reports-tekie:E4qpTYr0oYt6uzq@reports-tekie.postgres.database.azure.com/tekie', pool_recycle=3600)
-  DBConnection = AlchemyEngine.connect()
-  print('I have been called')
-  School_data_total = await pd.read_sql("select \"id\",\"studentId\",\"studentName\",\"userRole\",\"studentGrade\",\"studentSection\",\"classroomId\",\"classroomTitle\",\"schoolName\",\"courseTitle\",\"sessionTitle\",\"sessionType\",\"sessionId\",\"teacherName\",\"courseCategory\",\"sessionStart\",\"sessionEnd\",\"sessionStatus\",\"studentAttendance\" from \"updatedUserSessionReport\" WHERE \"schoolName\" = 'Gnan Shrishti School Of Excellence'", DBConnection)
-#   School_data_total = await pd.read_sql("select \"id\",\"studentId\",\"studentName\",\"userRole\",\"studentGrade\",\"studentSection\",\"classroomId\",\"classroomTitle\",\"schoolName\",\"courseTitle\",\"sessionTitle\",\"sessionType\",\"sessionId\",\"teacherName\",\"courseCategory\",\"sessionStart\",\"sessionEnd\",\"sessionStatus\",\"studentAttendance\" from \"updatedUserSessionReport\"", DBConnection)
-  print(School_data_total)
-  return School_data_total
-async def update_layout():
-    print('I have been called')
+df = pd.read_csv('schoolOverviewData.csv')
 
-    School_data_total = await get_data_from_backend()
-    return School_data_total
 
 
 
@@ -219,31 +207,31 @@ teacher_layout = html.Div([
 ])
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    school_layout,
 ])
 
-@app.callback(
-    Output('overview-graph', 'figure'),
-    [Input('school-dropdown', 'value'),
-      Input('compare-data', 'value')])
-def update_graph(school_dropdown,compare_data):
-    if school_dropdown == 'All Schools':
-        dff = df
-    else:
-        dff = df[df['School'].isin(school_dropdown)]
+# @app.callback(
+#     Output('overview-graph', 'figure'),
+#     Input('school-dropdown', 'valuex'),
+#     )
+# def update_graph(school_dropdown,compare_data):
+#     if school_dropdown == 'All Schools':
+#         dff = df
+#     else:
+#         dff = df[df['School'].isin(school_dropdown)]
       
-    compare_data = type(compare_data) == list and compare_data or [compare_data]
-    data = []
-    for i in compare_data:
-        data.append({'x': dff['School'], 'y': dff[i], 'type': 'bar', 'name': i})
-    print(data)
-    return {
-        'data': data,
-        'layout': {
-            'title': 'School Overview'
-        }
+#     compare_data = type(compare_data) == list and compare_data or [compare_data]
+#     data = []
+#     for i in compare_data:
+#         data.append({'x': dff['School'], 'y': dff[i], 'type': 'bar', 'name': i})
+#     print(data)
+#     return {
+#         'data': data,
+#         'layout': {
+#             'title': 'School Overview'
+#         }
 
-    }
+#     }
 
 # update table with date input
 # @app.callback(
@@ -259,70 +247,50 @@ def update_graph(school_dropdown,compare_data):
 #     return dff.to_dict('records')
 
 # for overview data
-@app.callback(
-    Output('table-container', 'children'),
-    Output('overview-attendance', 'children'),    
-    Output('overview-students', 'children'),    
-    Output('overview-batches', 'children'),    
-    Output('overview-teachers', 'children'),  
-    [Input('school-dropdown', 'value')])
-def update_completion(school_dropdown):
-    print(school_dropdown)
-    if school_dropdown == 'All Schools' or school_dropdown == None or len(school_dropdown) == 0:
-        dff = df
-    else:
-        dff = df[df['School'].isin(school_dropdown)]
-    return dash_table.DataTable(
-                id='table',
-                columns=[{"name": i, "id": i} for i in df.columns],
-                data=dff.to_dict('records'),
-                style_cell={
-                  'text-align': 'left',
-                  'font-family': 'sans-serif',
-                  'font-size': '14px',
-                  'font-weight': '400',
-                  'color': 'black',
+# @app.callback(
+#     Output('table-container', 'children'),
+#     Output('overview-attendance', 'children'),    
+#     Output('overview-students', 'children'),    
+#     Output('overview-batches', 'children'),    
+#     Output('overview-teachers', 'children'),  
+#     [Input('school-dropdown', 'value')])
+# def update_completion(school_dropdown):
+#     print(school_dropdown)
+#     if school_dropdown == 'All Schools' or school_dropdown == None or len(school_dropdown) == 0:
+#         dff = df
+#     else:
+#         dff = df[df['School'].isin(school_dropdown)]
+#     return dash_table.DataTable(
+#                 id='table',
+#                 columns=[{"name": i, "id": i} for i in df.columns],
+#                 data=dff.to_dict('records'),
+#                 style_cell={
+#                   'text-align': 'left',
+#                   'font-family': 'sans-serif',
+#                   'font-size': '14px',
+#                   'font-weight': '400',
+#                   'color': 'black',
 
-                }
-            ), dff['Attendance %'].mean(), dff['Total Students'].sum(), dff['No. of Batches'].sum(), dff['No. of Teachers'].sum()
+#                 }
+#             ), dff['Attendance %'].mean(), dff['Total Students'].sum(), dff['No. of Batches'].sum(), dff['No. of Teachers'].sum()
 # for lab overview
-@app.callback(
-    Output('lab-graph', 'figure'),
-    [Input('school-dropdown', 'value')])
-def update_completion(school_dropdown):
-    if school_dropdown == 'All Schools' or school_dropdown == None or len(school_dropdown) == 0:
-        dff = df
-    else:
-        dff = df[df['School'].isin(school_dropdown)]
-    return {
-        'data': [
-            {'labels': ['Total Labs Started', 'No. of Assigned Lab Sessions'], 'values': [dff['Total Labs Started'].sum(), dff['No. of Assigned Lab Sessions'].sum()] ,  'type': 'pie', 'name': 'Lab Overview'},
-        ],
+# @app.callback(
+#     Output('lab-graph', 'figure'),
+#     [Input('school-dropdown', 'value')])
+# def update_completion(school_dropdown):
+#     if school_dropdown == 'All Schools' or school_dropdown == None or len(school_dropdown) == 0:
+#         dff = df
+#     else:
+#         dff = df[df['School'].isin(school_dropdown)]
+#     return {
+#         'data': [
+#             {'labels': ['Total Labs Started', 'No. of Assigned Lab Sessions'], 'values': [dff['Total Labs Started'].sum(), dff['No. of Assigned Lab Sessions'].sum()] ,  'type': 'pie', 'name': 'Lab Overview'},
+#         ],
         
-    }
+#     }
 # for route url
-@app.callback(
-    Output('url', 'pathname'),
-    [Input('url', 'pathname')]
- )   
-def update_url(pathname):
-    if(pathname == '/'):
-        print("hi")
-        asyncio.run(update_layout())
-        
-        return navItems[0]['href']
-    return pathname    
-@app.callback(
-    Output('page-content', 'children'),
-    [Input('url', 'pathname')]
-)
-def display_page(pathname):
-    if pathname == '/school':
-        return school_layout
-    elif pathname == '/batch':
-        return batch_layout
-    elif pathname == '/teacher':
-        return teacher_layout
+  
+
 
 # run the update_layout function on page load
 
